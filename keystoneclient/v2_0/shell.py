@@ -44,7 +44,7 @@ def require_service_catalog(f):
 def do_user_list(kc, args):
     """List users"""
     users = kc.users.list(tenant_id=args.tenant_id)
-    utils.print_list(users, ['id', 'name', 'enabled', 'email'],
+    utils.print_list(users, ['id', 'name', 'enabled', 'email', 'eppn'],
                      order_by='name')
 
 
@@ -64,11 +64,14 @@ def do_user_get(kc, args):
            help='New user password')
 @utils.arg('--email', metavar='<email>',
            help='New user email address')
+@utils.arg('--eppn', metavar='<eppn>',
+           help='New user eppn')
 @utils.arg('--enabled', metavar='<true|false>', default=True,
            help='Initial user enabled status (default true)')
 def do_user_create(kc, args):
     """Create new user"""
     user = kc.users.create(args.name, args.passwd, args.email,
+                           eppn=args.eppn,
                            tenant_id=args.tenant_id,
                            enabled=utils.string_to_bool(args.enabled))
     utils.print_dict(user._info)
@@ -78,6 +81,8 @@ def do_user_create(kc, args):
            help='Desired new user name')
 @utils.arg('--email', metavar='<email>',
            help='Desired new email address')
+@utils.arg('--eppn', metavar='<eppn>',
+           help='New user eppn')
 @utils.arg('--enabled', metavar='<true|false>',
            help='Enable or disable user')
 @utils.arg('user', metavar='<user>', help='Name or ID of user to update')
@@ -88,6 +93,8 @@ def do_user_update(kc, args):
         kwargs['name'] = args.name
     if args.email:
         kwargs['email'] = args.email
+    if args.eppn:
+        kwargs['eppn'] = args.eppn
     if args.enabled:
         kwargs['enabled'] = utils.string_to_bool(args.enabled)
 
